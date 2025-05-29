@@ -1,0 +1,28 @@
+def playfair_encrypt(t, k):
+    k = ''.join(dict.fromkeys(k.upper().replace('J','I')))
+    m = k + ''.join(c for c in 'ABCDEFGHIKLMNOPQRSTUVWXYZ' if c not in k)
+    t = t.upper().replace('J','I').replace(' ','')
+    i = 0
+    r = ''
+    while i < len(t):
+        a = t[i]
+        b = t[i+1] if i+1 < len(t) else 'X'
+        if a == b:
+            b = 'X'
+            i += 1
+        else:
+            i += 2
+        t1 = m.index(a)
+        t2 = m.index(b)
+        x1, y1 = divmod(t1,5)
+        x2, y2 = divmod(t2,5)
+        if x1 == x2:
+            r += m[x1*5 + (y1+1)%5] + m[x2*5 + (y2+1)%5]
+        elif y1 == y2:
+            r += m[((x1+1)%5)*5 + y1] + m[((x2+1)%5)*5 + y2]
+        else:
+            r += m[x1*5 + y2] + m[x2*5 + y1]
+    return r
+
+# Example
+print(playfair_encrypt("HELLO WORLD", "MONARCHY"))
