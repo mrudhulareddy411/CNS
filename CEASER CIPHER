@@ -1,0 +1,26 @@
+#include<stdio.h>
+#include<ctype.h>
+int main(){
+	int key,i;
+	char a[100];
+	printf("enter the message to encrypt:\n");
+	scanf("%[^\n]",&a);
+	printf("enter the key:\n");
+	scanf("%d",&key);
+	if(key<1||key>25){
+		printf("invalid key");
+		return 1;
+	}
+	for(i=0;a[i]!='\0';i++){
+		char ch=a[i];
+			if(isupper(ch)){
+			a[i]=((ch-'A'+key)%26)+'A';
+		}
+		if(islower(ch)){
+			a[i]=((ch-'a'+key)%26)+'a';
+		}
+		
+	}
+	printf("the decrypted message is :\n%s",a);
+	return 0;
+}
