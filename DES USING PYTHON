@@ -1,0 +1,26 @@
+def string_to_uint64(s):
+    s=s.ljust(8)[:8]
+    return int.from_bytes(s.encode(),'big')
+def left_shift(val,shift):
+    return ((val<<shift)|(val>>(28-shift))) & 0x0FFFFFFF
+def combine(left,right):
+    return (left<<28)|right
+def generate_key(key):
+    shift_schedule=[1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1]
+    c=(key>>28)& 0x0FFFFFFF
+    d=key & 0x0FFFFFFF
+    return [combine(left_shift(c,s),left_shift(d,s)) for s in shift_schedule]
+def feistel(half_block,round_key):
+    return  half_block^(round_key & 0x0FFFFFFF)
+def des_encrypt(plaintext,key):
+    left=(plaintext>>32) & 0x0FFFFFFF
+    right=plaintext & 0x0FFFFFFF
+    for k in generate_key(key):
+        left,right=right,left^feistel(right,k)
+    return (right<<32)|left
+text=input("enter the text :")
+plain=string_to_uint64(text)
+key=0x0784A98BCF142DF9C
+cipher=des_encrypt(plain,key)
+print(f"plaintext : {plain : 016X}")
+print(f"ciphertext : {cipher: 016X}")
